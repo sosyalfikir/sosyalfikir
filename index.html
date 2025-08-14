@@ -1,4 +1,4 @@
-    <!doctype html>
+<!doctype html>
 <html lang="tr">
 <head>
 <meta charset="utf-8" />
@@ -39,18 +39,68 @@
   <div class="grid">
     <!-- SOL: Girdiler -->
     <div class="card">
-      <h3>Girdiler (manüel gir)</h3>
+      <h1>Girdiler (manuel gir)</h1>
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  .toggle-btn {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 5px;
+  }
 
+  .toggle-content {
+    display: none;
+    margin-top: 5px;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+  }
+</style>
+</head>
+<body>
+  
+  <script>
+function toggleContent(button) {
+  // Buttonun hemen sonraki kardeş elementi olan içerik divini al
+  const content = button.nextElementSibling;
+  if (content.style.display === "none" || content.style.display === "") {
+    content.style.display = "block"; // Göster
+  } else {
+    content.style.display = "none"; // Gizle
+  }
+}
+</script>
+        
+       <button class="toggle-btn1" onclick="toggleContent(this)">Yardım Al</button>
+<div class="toggle-content">
+  <p> Hisse Adedi Nasıl Bulunur?
+    <br>https://www.kap.org.tr/ adresine git
+  arama yerine hisse adını yaz 
+  Genel bilgi formu - Genel bilgiler
+  SERMAYE VE ORTAKLIK YAPISI BİLGİLERİ kısmına gir Formül= ((((
+  ödenmiş sermaye tutarı (TL) / Nominal Değer(TL) )))</p>
+  <br> 
+  <br>Defter Değeri = Toplam Varlıklar-Toplam Borçlar
+</div> 
+        
+        
+      
+    
       <label>Hisse Kodu / Not</label>
-      <input type="text" id="ticker" placeholder="Örn: AEFES">
-
+      <input type="text" id="ticker" placeholder="örn:AEFES">
+        </div>
       <div class="row2">
         <div>
           <label>Mevcut Hisse Fiyatı (TL)</label>
-          <input type="text" id="price" placeholder="Örn: 17.20" oninput="filterNum(this)">
+          <input type="text" id="price" placeholder="17.2" oninput="filterNum(this)">
         </div>
         <div>
-          <label>Hisse Adedi (adet)</label>
+          <label>Hisse Adedi </label>
           <input type="text" id="shares" placeholder="Örn: 592000000" oninput="filterNum(this)">
         </div>
       </div>
@@ -61,7 +111,7 @@
           <input type="text" id="netIncome" placeholder="Örn: 12560000000" oninput="filterNum(this)">
         </div>
         <div>
-          <label>Net Satış (TL)</label>
+          <label>Net Satış (Hasılat)(TL)</label>
           <input type="text" id="revenue" placeholder="Örn: 121500000000" oninput="filterNum(this)">
         </div>
       </div>
@@ -508,9 +558,9 @@ function resetAll(){
 /* ---------- Init: örnek doldurma (opsiyonel) ---------- */
 (function initExample(){
   // Comment out or remove these lines if you want totally blank start:
-  document.getElementById('ticker').value='AEFES';
-  document.getElementById('price').value='17.2';
-  document.getElementById('shares').value='592000000';
+  document.getElementById('ticker').value='';
+  document.getElementById('price').value='';
+  document.getElementById('shares').value='';
   document.getElementById('netProfit').value='12560000000';
   document.getElementById('revenue').value='159877000000';
   document.getElementById('equity').value='64557722000';
