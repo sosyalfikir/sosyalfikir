@@ -1,581 +1,140 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Hisse Analiz & Raporlama Aracı</title>
-<style>
-  :root{
-    --bg:#f6f7fb; --card:#fff; --line:#e6e9ee; --ok:#16a34a; --warn:#f59e0b; --bad:#dc2626; --text:#0f172a;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text);padding:16px}
-  .wrap{max-width:980px;margin:12px auto}
-  h1{font-size:20px;margin:0 0 12px}
-  .grid{display:grid;grid-template-columns:1fr 420px;gap:12px}
-  @media(max-width:900px){ .grid{grid-template-columns:1fr} }
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
-  label{display:block;font-size:13px;color:#334155;margin:8px 0 4px}
-  input[type="text"]{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font-size:15px}
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-  button{background:#0b5fff;color:#fff;padding:10px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
-  button.secondary{background:#fff;color:#0b5fff;border:1px solid var(--line)}
-  .kpi{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;border:1px dashed var(--line);margin:8px 0}
-  table{width:100%;border-collapse:collapse;margin-top:8px}
-  th,td{padding:8px;text-align:left;border-bottom:1px solid var(--line);font-size:14px}
-  .muted{font-size:13px;color:#718096}
-  .pill{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:13px}
-  .ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
-  pre.report{white-space:pre-wrap;background:#0f172a;color:#fff;padding:12px;border-radius:8px;margin-top:10px;overflow:auto}
-  .small{font-size:12px;color:#475569}
-</style>
+  <meta charset="UTF-8">
+  <title>HonorOfNations İlan Sayfası</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
+    header { background: #333; color: #fff; padding: 15px; text-align: center; font-size: 20px; }
+    .container { padding: 20px; }
+    .form-box { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    label { display:block; margin-top:10px; font-weight: bold; }
+    input, textarea, select, button { width: 100%; padding: 8px; margin-top:5px; border:1px solid #ccc; border-radius:5px; }
+    button { background: #333; color: white; cursor: pointer; font-weight: bold; }
+    button:hover { background: #555; }
+    .messages { margin-top: 20px; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .message { background: #e0f7fa; margin: 10px 0; padding: 12px; border-radius: 10px; white-space: pre-line; }
+    .note { margin-top: 10px; font-size: 12px; color: #666; }
+    .error { color: red; font-weight: bold; margin-top: 10px; }
+  </style>
 </head>
 <body>
-<div class="wrap">
 
-  <h1>Hisse Analiz & Raporlama Aracı — Manuel Girdi ve Tam Rapor</h1>
+<header>HonorOfNations İlan Sayfası</header>
 
-  <div class="grid">
-    <!-- SOL: Girdiler -->
-    <div class="card">
-      <h1>Girdiler (manuel gir)</h1>
-        
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-  .toggle-btn {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-top: 5px;
-  }
+<div class="container">
+  <!-- İlan Formu -->
+  <div class="form-box">
+    <h3>İlan Oluştur</h3>
+    <label>Satıcı / Alıcı</label>
+    <select id="ilanType">
+      <option value="Satıcı">Satıcı</option>
+      <option value="Alıcı">Alıcı</option>
+    </select>
 
-  .toggle-content {
-    display: none;
-    margin-top: 5px;
-    padding: 10px;
-    background-color: #f1f1f1;
-    border-radius: 5px;
-  }
-</style>
-</head>
-<body>
-  
-  <script>
-function toggleContent(button) {
-  // Buttonun hemen sonraki kardeş elementi olan içerik divini al
-  const content = button.nextElementSibling;
-  if (content.style.display === "none" || content.style.display === "") {
-    content.style.display = "block"; // Göster
-  } else {
-    content.style.display = "none"; // Gizle
-  }
-}
-</script>
-        
-       <button class="toggle-btn1" onclick="toggleContent(this)">Yardım Al</button>
-<div class="toggle-content">
-  <p> Hisse Adedi Nasıl Bulunur?
-    <br>https://www.kap.org.tr/ adresine git
-  arama yerine hisse adını yaz 
-  Genel bilgi formu - Genel bilgiler
-  SERMAYE VE ORTAKLIK YAPISI BİLGİLERİ kısmına gir Formül= ((((
-  ödenmiş sermaye tutarı (TL) / Nominal Değer(TL) )))</p>
-  <br> 
-  <br>Defter Değeri = Toplam Varlıklar-Toplam Borçlar
-</div> 
-        
-        
-      
-    
-      <label>Hisse Kodu / Not</label>
-      <input type="text" id="ticker" placeholder="örn:AEFES">
-        </div>
-      <div class="row2">
-        <div>
-          <label>Mevcut Hisse Fiyatı (TL)</label>
-          <input type="text" id="price" placeholder="17.2" oninput="filterNum(this)">
-        </div>
-        <div>
-          <label>Hisse Adedi </label>
-          <input type="text" id="shares" placeholder="Örn: 592000000" oninput="filterNum(this)">
-        </div>
-      </div>
+    <label>İtem </label>
+    <input type="text" id="item" placeholder="Örn: +9 iB ">
 
-      <div class="row2">
-        <div>
-          <label>Net Dönem Kârı (TL)</label>
-          <input type="text" id="netIncome" placeholder="Örn: 12560000000" oninput="filterNum(this)">
-        </div>
-        <div>
-          <label>Net Satış (Hasılat)(TL)</label>
-          <input type="text" id="revenue" placeholder="Örn: 121500000000" oninput="filterNum(this)">
-        </div>
-      </div>
+    <label>İletişim</label>
+    <input type="text" id="iletisim" placeholder="Örn: 0530 .....">
 
-      <div class="row2">
-        <div>
-          <label>Özkaynaklar / Defter Değeri (TL)</label>
-          <input type="text" id="equity" placeholder="Örn: 64557722000" oninput="filterNum(this)">
-        </div>
-        <div>
-          <label>Toplam Yükümlülükler / Toplam Borç (TL)</label>
-          <input type="text" id="totalDebt" placeholder="Örn: 60233608000" oninput="filterNum(this)">
-        </div>
-      </div>
+    <label>Fiyat</label>
+    <input type="text" id="price" placeholder="Örn: 100 Gb veya 100 Tl">
 
-      <div class="row2">
-        <div>
-          <label>Dönen Varlıklar (TL)</label>
-          <input type="text" id="currentAssets" placeholder="Örn: 50000000000" oninput="filterNum(this)">
-        </div>
-        <div>
-          <label>Kısa Vadeli Yükümlülükler (TL)</label>
-          <input type="text" id="currentLiab" placeholder="Örn: 45000000000" oninput="filterNum(this)">
-        </div>
-      </div>
+    <label>Ek Bilgi</label>
+    <textarea id="extra" placeholder="Örn: Takas yapılmaz, Sadece Gold"></textarea>
 
-      <div class="row2">
-        <div>
-          <label>FAVÖK / EBITDA (TL)</label>
-          <input type="text" id="ebitda" placeholder="Örn: 20000000000" oninput="filterNum(this)">
-        </div>
-        <div>
-          <label>Temettü (DPS, TL)</label>
-          <input type="text" id="dps" placeholder="Örn: 0.13" oninput="filterNum(this)">
-        </div>
-      </div>
-
-      <div class="row2">
-        <div>
-          <label>ROE (%) — (opsiyonel)</label>
-          <input type="text" id="roe" placeholder="Örn: 12.8" oninput="filterNum(this)">
-        </div>
-        <div>
-          <label>Gelir Büyümesi (%) — (yıllık)</label>
-          <input type="text" id="revGrowth" placeholder="Örn: -23" oninput="filterNum(this)">
-        </div>
-      </div>
-
-      <hr style="margin:12px 0;border:none;border-top:1px solid var(--line)">
-
-      <h4>Ayarlar / Varsayımlar</h4>
-      <div class="row2">
-        <div>
-          <label>Beklenen (Sektör) F/K (P/E) hedef çarpanı</label>
-          <input type="text" id="targetPE" value="12" oninput="filterNum(this)">
-        </div>
-        <div>
-          <label>Serbest nakit akışı DCF yok — Güvenlik marjı (%)</label>
-          <input type="text" id="safety" value="15" oninput="filterNum(this)">
-        </div>
-      </div>
-
-      <div style="margin-top:10px">
-        <button onclick="runAll()">Hesapla & Rapor Oluştur</button>
-        <button class="secondary" onclick="resetAll()">Sıfırla</button>
-      </div>
-
-      <p class="small" style="margin-top:10px">
-        Tüm alanlar manuel; ondalık için nokta veya virgül, büyük sayılarda bin ayırıcısı olarak noktalar (örn. 12.345.678) kullanılabilir. Girdi kontrolü otomatik.
-      </p>
-    </div>
-
-    <!-- SAĞ: Çıktılar & Rapor -->
-    <div class="card">
-      <h3>Hesaplanmış Metrikler & Senaryolar</h3>
-
-      <div id="summaryBoxes"></div>
-
-      <table id="metricsTable">
-        <thead><tr><th>Metri̇k</th><th>Değer</th></tr></thead>
-        <tbody></tbody>
-      </table>
-
-      <h4 style="margin-top:12px">Hedef Fiyat Senaryoları</h4>
-      <table id="scenarios">
-        <thead><tr><th>Senaryo</th><th>Target (TL)</th><th>Yukarı Potansiyel</th></tr></thead>
-        <tbody></tbody>
-      </table>
-
-      <h4 style="margin-top:12px">Otomatik Rapor</h4>
-      <pre id="report" class="report">Hesapla butonuna basınca rapor burada görünecek.</pre>
-
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button onclick="copyReport()">Raporu Kopyala</button>
-        <button onclick="printReport()">Raporu Yazdır</button>
-      </div>
+    <button onclick="createMessage()">İlanı Yayınla</button>
+    <div id="errorBox" class="error"></div>
+    <div class="note">
+      ⚠️ Flood kuralı: 2 saat dolmadan tekrar ilan paylaşılamaz.
+      <br> ⚠️ Güvenli Ticaret için Referans/teyit almanız sizin için riski azaltır.
     </div>
   </div>
 
+  <!-- Mesajlar -->
+  <div class="messages" id="chatArea">
+    <h3>Yayınlanan İlanlar</h3>
+  </div>
 </div>
 
 <script>
-/* ---------- Helperler ---------- */
-function filterNum(el){ el.value = el.value.replace(/[^0-9\-,.\s]/g,''); } // rakam, nokta, virgül, tire
-function parseFlexible(v){
-  if(v===null || v===undefined) return NaN;
-  let s = String(v).trim();
-  if(s==='') return NaN;
-  // remove spaces, handle thousand separators:
-  // replace comma with dot only if comma used as decimal; heuristic:
-  // If more than one dot or comma, remove dots (thousands) and replace comma with dot.
-  const dots = (s.match(/\./g)||[]).length;
-  const commas = (s.match(/,/g)||[]).length;
-  if(dots>1 && commas===0){ s = s.replace(/\./g,''); }
-  if(commas>1 && dots===0){ s = s.replace(/,/g,''); }
-  // if both present, assume dots are thousands and comma decimal: remove dots, comma->dot
-  if(dots>0 && commas>0){ s = s.replace(/\./g,'').replace(',','.'); }
-  // if only commas present, treat comma as decimal
-  if(commas>0 && dots===0){ s = s.replace(',','.'); }
-  // remove spaces
-  s = s.replace(/\s/g,'');
-  const n = parseFloat(s);
-  return isFinite(n) ? n : NaN;
-}
-function money(v){ return isFinite(v) ? new Intl.NumberFormat('tr-TR').format(v) + ' TL' : '—'; }
-function pct(v){ return isFinite(v) ? (v>=0?'+':'') + v.toFixed(1) + ' %' : '—'; }
-function short(v){ return isFinite(v) ? (Math.abs(v)>=1e9? (v/1e9).toFixed(2)+'B' : Math.abs(v)>=1e6? (v/1e6).toFixed(2)+'M' : v.toFixed(0)) : '—'; }
+  const ILAN_SURE = 24 * 60 * 60 * 1000; // 24 saat
 
-/* ---------- Temel Hesaplar ---------- */
-function computeMetrics(inputs){
-  const out = {};
-  const { price, shares, netIncome, revenue, equity, totalDebt, currentAssets, currentLiab, ebitda, dps, roe, revGrowth } = inputs;
+  function loadMessages() {
+    const chatArea = document.getElementById("chatArea");
+    chatArea.innerHTML = "<h3>Yayınlanan İlanlar</h3>";
 
-  // Market cap
-  out.marketCap = (isFinite(price) && isFinite(shares)) ? price * shares : NaN;
+    let ilanlar = JSON.parse(localStorage.getItem("ilanlar")) || [];
+    const now = Date.now();
 
-  // EPS
-  out.eps = (isFinite(netIncome) && isFinite(shares) && shares>0) ? netIncome / shares : NaN;
+    // 24 saati geçen ilanları filtrele
+    ilanlar = ilanlar.filter(ilan => (now - ilan.time) < ILAN_SURE);
 
-  // PE
-  out.pe = (isFinite(price) && isFinite(out.eps) && out.eps>0) ? price / out.eps : NaN;
-
-  // PD/DD (P/B)
-  out.pb = (isFinite(out.marketCap) && isFinite(equity) && equity>0) ? out.marketCap / equity : NaN;
-
-  // Debt/Equity
-  out.de = (isFinite(totalDebt) && isFinite(equity) && equity>0) ? totalDebt / equity : NaN;
-
-  // Net margin
-  out.netMargin = (isFinite(netIncome) && isFinite(revenue) && revenue!==0) ? (netIncome / revenue * 100) : NaN;
-
-  // Current Ratio
-  out.currentRatio = (isFinite(currentAssets) && isFinite(currentLiab) && currentLiab!==0) ? (currentAssets / currentLiab) : NaN;
-
-  // EV and EV/EBITDA
-  out.ev = (isFinite(out.marketCap) && isFinite(totalDebt)) ? (out.marketCap + totalDebt - (/*assume cash 0*/ 0)) : NaN;
-  out.evEbitda = (isFinite(out.ev) && isFinite(ebitda) && ebitda!==0) ? (out.ev / ebitda) : NaN;
-
-  // ROE fallback
-  out.roe = isFinite(roe) ? roe : (isFinite(netIncome) && isFinite(equity) && equity!==0 ? (netIncome / equity * 100) : NaN);
-
-  // revenue growth
-  out.revGrowth = isFinite(revGrowth) ? revGrowth : NaN;
-
-  return out;
-}
-
-/* ---------- Hedef Fiyat Hesaplama (PE ve DDM) ---------- */
-function computeTargets(metrics, inputs){
-  const { targetPE, safety } = inputs;
-  const out = {};
-
-  // PE method
-  if(isFinite(metrics.eps) && isFinite(targetPE) && targetPE>0){
-    out.targetPE = metrics.eps * targetPE;
-    out.upsidePE = isFinite(inputs.price) && inputs.price>0 ? (out.targetPE / inputs.price - 1) * 100 : NaN;
-  } else { out.targetPE = NaN; out.upsidePE = NaN; }
-
-  // DDM / Gordon (if DPS, r, g provided)
-  const dps = inputs.dps;
-  const g = inputs.growth / 100; // optional field from inputs (we don't have default in main inputs; user may not set)
-  const r = inputs.r / 100;
-  out.targetDDM = NaN; out.upsideDDM = NaN;
-  if(isFinite(dps) && isFinite(g) && isFinite(r) && r>g){
-    let val = (dps * (1 + g)) / (r - g);
-    // apply safety
-    if(isFinite(safety)) val = val * (1 - safety/100);
-    out.targetDDM = val;
-    out.upsideDDM = isFinite(inputs.price) && inputs.price>0 ? (val / inputs.price - 1) * 100 : NaN;
-  }
-
-  // Scenario multiples around targetPE (conservative, base, optimistic)
-  out.scenarios = [];
-  if(isFinite(out.targetPE)){
-    const mults = [{name:'Konservatif',pe: Math.max(4, inputs.targetPE*0.7)},
-                   {name:'Temel', pe: inputs.targetPE},
-                   {name:'İyimser', pe: Math.max(inputs.targetPE*1.3, inputs.targetPE+4)}];
-    mults.forEach(m=>{
-      const t = isFinite(metrics.eps) ? metrics.eps * m.pe : NaN;
-      const upside = isFinite(t) && isFinite(inputs.price) && inputs.price>0 ? (t/inputs.price -1)*100 : NaN;
-      out.scenarios.push({label:m.name, pe:m.pe, target:t, upside:upside});
+    // Ekrana bas
+    ilanlar.forEach(ilan => {
+      const div = document.createElement("div");
+      div.className = "message";
+      div.textContent = ilan.text;
+      chatArea.appendChild(div);
     });
+
+    // Güncel listeyi kaydet
+    localStorage.setItem("ilanlar", JSON.stringify(ilanlar));
   }
 
-  return out;
-}
+  function createMessage() {
+    const ilanType = document.getElementById("ilanType").value;
+    const item = document.getElementById("item").value.trim();
+    const iletisim = document.getElementById("iletisim").value.trim();
+    const price = document.getElementById("price").value.trim();
+    const extra = document.getElementById("extra").value.trim();
+    const errorBox = document.getElementById("errorBox");
 
-/* ---------- Score & Recommendation ---------- */
-function scoreAndRecommendation(metrics){
-  // simple weighted score (0-100)
-  // weights (can be tuned)
-  const w = {
-    pe: 15, pb:10, de:15, roe:20, netMargin:15, revGrowth:10, currentRatio:15
-  };
-  // normalize later
-  let s=0, total=0;
+    const now = Date.now();
+    const lastPost = localStorage.getItem("lastPostTime");
 
-  // PE: lower is better; assume ideal <=10, max 40
-  if(isFinite(metrics.pe)){
-    const v = clamp((40 - metrics.pe)/(40-5) * 100, 0, 100); s += v * w.pe; total += w.pe;
+    if (lastPost && (now - lastPost) < 7200000) { // 2 saat
+      const remaining = Math.ceil((7200000 - (now - lastPost)) / 60000);
+      errorBox.textContent = "❌ Yeni ilan için " + remaining + " dakika beklemelisin.";
+      return;
+    }
+
+    if (!item || !price) {
+      errorBox.textContent = "❌ Lütfen item ve fiyat alanlarını doldurun.";
+      return;
+    }
+
+    errorBox.textContent = "";
+
+    const msg =
+`[${ilanType}]
+Item: ${item}
+İletişim: ${iletisim}
+Fiyat: ${price}
+${extra ? "Not: " + extra : ""}
+---
+⚠️ Güvenli Ticaret için Referans/teyit almanız sizin için riski azaltır.`;
+
+    // İlanı kaydet
+    let ilanlar = JSON.parse(localStorage.getItem("ilanlar")) || [];
+    ilanlar.push({ text: msg, time: now });
+    localStorage.setItem("ilanlar", JSON.stringify(ilanlar));
+
+    localStorage.setItem("lastPostTime", now);
+
+    // Formu temizle
+    document.getElementById("item").value = "";
+    document.getElementById("iletisim").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("extra").value = "";
+
+    loadMessages();
   }
 
-  // PB: lower better, ideal<=1, max 5
-  if(isFinite(metrics.pb)){
-    const v = clamp((5 - metrics.pb)/(5-0.5) * 100, 0, 100); s += v * w.pb; total += w.pb;
-  }
-
-  // DE: lower better, ideal<=0.5, max 3
-  if(isFinite(metrics.de)){
-    const v = clamp((3 - metrics.de)/(3-0) * 100, 0, 100); s += v * w.de; total += w.de;
-  }
-
-  // ROE: higher better, ideal 20, max 40
-  if(isFinite(metrics.roe)){
-    const v = clamp((metrics.roe - 0)/(40 - 0) * 100, 0, 100); s += v * w.roe; total += w.roe;
-  }
-
-  // Net margin: higher better, ideal 20
-  if(isFinite(metrics.netMargin)){
-    const v = clamp((metrics.netMargin - 0)/(30 - 0) * 100, 0, 100); s += v * w.netMargin; total += w.netMargin;
-  }
-
-  // Rev growth: higher better, -50..50 mapped
-  if(isFinite(metrics.revGrowth)){
-    const v = clamp((metrics.revGrowth + 50)/(100) * 100, 0, 100); s += v * w.revGrowth; total += w.revGrowth;
-  }
-
-  // Current Ratio: ideal 1.2-2.5
-  if(isFinite(metrics.currentRatio)){
-    const v = clamp((metrics.currentRatio)/(3) * 100, 0, 100); s += v * w.currentRatio; total += w.currentRatio;
-  }
-
-  const score = total>0 ? s/total : NaN;
-
-  // Recommendation based on score and liquidity / leverage
-  let rec = 'Nötr — Daha fazla araştırma gerekli.';
-  if(isFinite(score)){
-    if(score >= 75 && metrics.de <= 1 && metrics.currentRatio >= 1) rec = 'Pozitif — Uzun/Orta vadeli yatırım düşünülebilir.';
-    else if(score >= 55) rec = 'Orta — Orta vadeli, pozisyona göre alım düşünülebilir.';
-    else rec = 'Negatif — Kısa vadeli risk yüksek; bekle/araştır.';
-  }
-
-  return {score: Math.round(score||0), recommendation: rec};
-}
-
-/* clamp */
-function clamp(x,min,max){ return Math.max(min, Math.min(max, x)); }
-
-/* ---------- UI: run all ---------- */
-function runAll(){
-  // read inputs
-  const inputs = {
-    ticker: document.getElementById('ticker').value || '',
-    price: parseFlexible(document.getElementById('price').value),
-    shares: parseFlexible(document.getElementById('shares').value),
-    netIncome: parseFlexible(document.getElementById('netIncome').value),
-    revenue: parseFlexible(document.getElementById('revenue').value),
-    equity: parseFlexible(document.getElementById('equity').value),
-    totalDebt: parseFlexible(document.getElementById('totalDebt').value),
-    currentAssets: parseFlexible(document.getElementById('currentAssets').value),
-    currentLiab: parseFlexible(document.getElementById('currentLiab').value),
-    ebitda: parseFlexible(document.getElementById('ebitda').value),
-    dps: parseFlexible(document.getElementById('dps').value),
-    roe: parseFlexible(document.getElementById('roe').value),
-    revGrowth: parseFlexible(document.getElementById('revGrowth').value),
-    targetPE: parseFlexible(document.getElementById('targetPE').value),
-    safety: parseFlexible(document.getElementById('safety').value)
-  };
-
-  // compute metrics
-  const metrics = computeMetrics(inputs);
-
-  // compute targets
-  const targets = computeTargets(metrics, {
-    price: inputs.price,
-    targetPE: inputs.targetPE,
-    dps: inputs.dps,
-    growth: parseFlexible(document.getElementById('g') ? document.getElementById('g').value : NaN),
-    r: parseFlexible(document.getElementById('r') ? document.getElementById('r').value : NaN),
-    safety: inputs.safety
-  });
-
-  // score & rec
-  const scored = scoreAndRecommendation({
-    pe: metrics.pe,
-    pb: metrics.pb,
-    de: metrics.de,
-    roe: metrics.roe,
-    netMargin: metrics.netMargin,
-    revGrowth: metrics.revGrowth,
-    currentRatio: metrics.currentRatio
-  });
-
-  // fill summary boxes
-  const sb = document.getElementById('summaryBoxes');
-  sb.innerHTML = '';
-  const sdiv = document.createElement('div'); sdiv.className='kpi';
-  sdiv.innerHTML = `<div><div class="muted">Toplam Skor</div><div style="font-weight:700">${scored.score} / 100</div></div>
-                    <div style="text-align:right"><div class="muted">Öneri</div><div style="font-weight:700">${scored.recommendation}</div></div>`;
-  sb.appendChild(sdiv);
-
-  // metrics table
-  const tbody = document.querySelector('#metricsTable tbody');
-  const rows = [
-    ['Hisse Kodu', inputs.ticker || '—'],
-    ['Piyasa Değeri (MarketCap)', money(metrics.marketCap)],
-    ['EPS (Net Kâr / Hisse)', isFinite(metrics.eps)? metrics.eps.toFixed(2)+' TL' : '—'],
-    ['Mevcut F/K', isFinite(metrics.pe)? metrics.pe.toFixed(2) : '—'],
-    ['PD/DD (P/B)', isFinite(metrics.pb)? metrics.pb.toFixed(2) : '—'],
-    ['Borç / Özkaynak', isFinite(metrics.de)? metrics.de.toFixed(2) : '—'],
-    ['Net Kâr Marjı', isFinite(metrics.netMargin)? metrics.netMargin.toFixed(2)+' %' : '—'],
-    ['ROE (%)', isFinite(metrics.roe)? metrics.roe.toFixed(2)+' %' : '—'],
-    ['Cari Oran', isFinite(metrics.currentRatio)? metrics.currentRatio.toFixed(2) : '—'],
-    ['EV/EBITDA', isFinite(metrics.evEbitda)? metrics.evEbitda.toFixed(2) : '—'],
-    ['Gelir (Net Satış)', isFinite(inputs.revenue)? money(inputs.revenue) : '—']
-  ];
-  tbody.innerHTML = rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
-
-  // scenarios table
-  const sbody = document.querySelector('#scenarios tbody');
-  sbody.innerHTML = '';
-  if(Array.isArray(targets.scenarios) && targets.scenarios.length){
-    targets.scenarios.forEach(s=>{
-      sbody.innerHTML += `<tr><td>${s.label} (PE ${s.pe.toFixed(1)})</td><td>${isFinite(s.target)? s.target.toFixed(2)+' TL':'—'}</td><td>${isFinite(s.upside)? pct(s.upside):'—'}</td></tr>`;
-    });
-  } else {
-    sbody.innerHTML = `<tr><td colspan="3" class="muted">PE senaryosu için EPS ve Beklenen PE girin.</td></tr>`;
-  }
-
-  // DDM row (if available)
-  if(isFinite(targets.targetDDM)){
-    sbody.innerHTML += `<tr><td>DDM Hedef</td><td>${targets.targetDDM.toFixed(2)} TL</td><td>${pct(targets.upsideDDM)}</td></tr>`;
-  }
-
-  // report text
-  const report = generateReport(inputs, metrics, targets, scored);
-  document.getElementById('report').textContent = report;
-}
-
-/* ---------- Rapor metni üretme ---------- */
-function generateReport(inputs, metrics, targets, scored){
-  const lines = [];
-  lines.push(`HİSSE RAPORU — ${inputs.ticker || ' (Kod girilmedi)'} `);
-  lines.push(`Tarih: ${new Date().toLocaleString()}`);
-  lines.push('');
-  lines.push('--- Girdiler ---');
-  lines.push(`Mevcut Fiyat: ${isFinite(inputs.price)? inputs.price+' TL' : '—'}`);
-  lines.push(`Hisse Adedi: ${isFinite(inputs.shares)? inputs.shares : '—'}`);
-  lines.push(`Net Dönem Kârı: ${isFinite(inputs.netIncome)? money(inputs.netIncome) : '—'}`);
-  lines.push(`Net Satış: ${isFinite(inputs.revenue)? money(inputs.revenue) : '—'}`);
-  lines.push(`Özkaynak: ${isFinite(inputs.equity)? money(inputs.equity) : '—'}`);
-  lines.push(`Toplam Borç/Yükümlülük: ${isFinite(inputs.totalDebt)? money(inputs.totalDebt) : '—'}`);
-  lines.push('');
-  lines.push('--- Hesaplanan Metrikler ---');
-  lines.push(`EPS: ${isFinite(metrics.eps)? metrics.eps.toFixed(4) + ' TL' : '—'}`);
-  lines.push(`Mevcut F/K: ${isFinite(metrics.pe)? metrics.pe.toFixed(2) : '—'}`);
-  lines.push(`PD/DD: ${isFinite(metrics.pb)? metrics.pb.toFixed(2) : '—'}`);
-  lines.push(`Borç/Özkaynak: ${isFinite(metrics.de)? metrics.de.toFixed(2) : '—'}`);
-  lines.push(`Net Kar Marjı: ${isFinite(metrics.netMargin)? metrics.netMargin.toFixed(2)+' %' : '—'}`);
-  lines.push(`ROE: ${isFinite(metrics.roe)? metrics.roe.toFixed(2)+' %' : '—'}`);
-  lines.push(`Cari Oran: ${isFinite(metrics.currentRatio)? metrics.currentRatio.toFixed(2) : '—'}`);
-  lines.push(`EV/EBITDA: ${isFinite(metrics.evEbitda)? metrics.evEbitda.toFixed(2) : '—'}`);
-  lines.push('');
-  lines.push('--- Değerleme & Senaryolar ---');
-  if(isFinite(targets.targetPE)){
-    lines.push(`Hedef (F/K yöntemi, PE=${parseFlexible(document.getElementById('targetPE').value)}): ${targets.targetPE.toFixed(2)} TL`);
-    lines.push(`Yukarı Potansiyel (F/K): ${isFinite(targets.upsidePE)? targets.upsidePE.toFixed(1)+' %' : '—'}`);
-  } else {
-    lines.push('F/K yöntemiyle hedef hesaplanamadı (EPS veya Beklenen PE eksik).');
-  }
-  if(isFinite(targets.targetDDM)) {
-    lines.push(`Hedef (DDM): ${targets.targetDDM.toFixed(2)} TL (Gordon)`);
-    lines.push(`Yukarı Potansiyel (DDM): ${targets.upsideDDM.toFixed(1)} %`);
-  }
-  lines.push('');
-  lines.push('--- Özet Skor & Öneri ---');
-  lines.push(`Toplam Skor: ${scored.score} / 100`);
-  lines.push(`Öneri: ${scored.recommendation}`);
-  lines.push('');
-  lines.push('--- Güçlü / Zayıf Yönler (otomatik çıkarım) ---');
-  // simple automated points
-  if(isFinite(metrics.pe) && metrics.pe < 12) lines.push('- Değerleme cazip (düşük F/K).');
-  if(isFinite(metrics.pe) && metrics.pe >= 20) lines.push('- F/K yüksek; fiyat riskli olabilir.');
-  if(isFinite(metrics.de) && metrics.de < 0.8) lines.push('- Düşük kaldıraç; borç yönetimi iyi.');
-  if(isFinite(metrics.currentRatio) && metrics.currentRatio < 1) lines.push('- Kısa vadeli likidite riski (cari oran < 1).');
-  if(isFinite(metrics.netMargin) && metrics.netMargin < 5) lines.push('- Düşük net marj; operasyonel verim sorgulanmalı.');
-  if(isFinite(metrics.revGrowth) && metrics.revGrowth < 0) lines.push(`- Gelir daralması: ${metrics.revGrowth.toFixed(1)}% (dikkat).`);
-  lines.push('');
-  lines.push('--- Vade & Beklenti Önerisi ---');
-  if(scored.score >= 75) lines.push('- Vade: Uzun/Orta (1-5 yıl). Beklenti: Getiri + temkinli büyüme.');
-  else if(scored.score >= 55) lines.push('- Vade: Orta (1-3 yıl). Beklenti: Fiyat dalgalanabilir; seçici alım.');
-  else lines.push('- Vade: Kısa/Geçici (0-12 ay). Beklenti: Yüksek risk; takip/inceleme önerilir.');
-
-  lines.push('');
-  lines.push('Not: Bu rapor yalnızca verilen girdilere dayanır. Nasıl okuduğunuz, sektör ve makro koşullar ile şirket haberlerini kombine etmeyi unutmayın.');
-
-  return lines.join('\n');
-}
-
-/* ---------- Kopya / Yazdır ---------- */
-function copyReport(){
-  const text = document.getElementById('report').textContent;
-  navigator.clipboard?.writeText(text).then(()=> alert('Rapor panoya kopyalandı.'), ()=>alert('Kopyalama desteklenmiyor.'));
-}
-function printReport(){
-  const content = document.getElementById('report').textContent;
-  const w = window.open('', '_blank');
-  w.document.write('<pre style="font-family:monospace;">'+ content +'</pre>');
-  w.document.close();
-  w.print();
-}
-
-/* ---------- Reset ---------- */
-function resetAll(){
-  ['ticker','price','shares','netProfit','revenue','equity','totalDebt','currentAssets','currentLiab','ebitda','dps','roe','revGrowth','targetPE','safety'].forEach(id=>{
-    document.getElementById(id) && (document.getElementById(id).value = '');
-  });
-  document.getElementById('summaryBoxes').innerHTML = '';
-  document.querySelector('#metricsTable tbody').innerHTML = '';
-  document.querySelector('#scenarios tbody').innerHTML = '';
-  document.getElementById('report').textContent = 'Hesapla butonuna basınca rapor burada görünecek.';
-}
-
-/* ---------- Init: örnek doldurma (opsiyonel) ---------- */
-(function initExample(){
-  // Comment out or remove these lines if you want totally blank start:
-  document.getElementById('ticker').value='';
-  document.getElementById('price').value='';
-  document.getElementById('shares').value='';
-  document.getElementById('netProfit').value='12560000000';
-  document.getElementById('revenue').value='159877000000';
-  document.getElementById('equity').value='64557722000';
-  document.getElementById('totalDebt').value='60233608000';
-  document.getElementById('currentAssets').value='80000000000';
-  document.getElementById('currentLiab').value='47000000000';
-  document.getElementById('ebitda').value='22000000000';
-  document.getElementById('dps').value='0.13';
-  document.getElementById('roe').value='12.8';
-  document.getElementById('revGrowth').value='-23';
-  document.getElementById('targetPE').value='12';
-  document.getElementById('safety').value='15';
-  // auto run initial compute so page isn't blank
-  runAll();
-})();
+  // Sayfa açıldığında eski ilanları kontrol et
+  window.onload = loadMessages;
 </script>
+
 </body>
 </html>
