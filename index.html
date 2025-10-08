@@ -1,1 +1,44 @@
-
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tam Ekran Resim</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    .full-img {
+      width: 100%;
+      height: 100vh;          /* viewport yüksekliğini kapla */
+      object-fit: cover;      /* kırparak ekranı kaplar */
+      display: block;
+    }
+    /* Eğer sayfa içeriği üzerine yazı koymak istersen, resmi arka plana alıp absolute kullanabilirsin */
+    .wrap {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .content {
+      position: absolute;
+      inset: 0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      pointer-events: none; /* istersen değiştir */
+      color: white;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+      font-family: Arial, sans-serif;
+      font-size: clamp(18px, 3vw, 36px);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <img src="1.jpg" alt="Arkaplan resmi" class="full-img">
+    <div class="content">İçerik buraya</div>
+  </div>
+</body>
+</html>
