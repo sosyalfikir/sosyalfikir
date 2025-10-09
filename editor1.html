@@ -1,116 +1,148 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<title>Fotoğraf Düzenleyici - Çalışan Sürüm</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body {
-  font-family: sans-serif;
-  background: #f0f0f0;
-  text-align: center;
-  margin: 0; padding: 0;
-}
-#toolbar {
-  background: #333; color: white;
-  padding: 10px; display: flex;
-  flex-wrap: wrap; justify-content: center; gap: 8px;
-}
-button, input[type="color"], input[type="range"] {
-  cursor: pointer; border: none;
-  border-radius: 6px;
-  padding: 6px 10px;
-}
-canvas {
-  border: 2px solid #333;
-  margin-top: 10px;
-  background: white;
-}
-#loading { color:#333; font-size:14px; margin-top:8px; }
-</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Gelişmiş Fotoğraf Editörü</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    #canvas-container { position: relative; width: 800px; height: 600px; border: 1px solid #ccc; }
+    canvas { background: #fff; }
+    .controls { margin-bottom: 10px; }
+    .layer-controls { margin-top: 10px; }
+  </style>
 </head>
 <body>
+  <h2>Gelişmiş Fotoğraf Editörü</h2>
+  <div class="controls">
+    <input type="file" id="imageLoader" multiple accept="image/*">
+    <input type="text" id="textInput" placeholder="Metin ekle">
+    <input type="color" id="textColor" value="#000000">
+    <input type="number" id="fontSize" value="24" min="10" max="100">
+    <button onclick="addText()">Metin Ekle</button>
+  </div>
 
-<div id="toolbar">
-  <label><b>Katman 1:</b> <input type="file" id="file1" accept="image/*"></label>
-  <label><b>Katman 2:</b> <input type="file" id="file2" accept="image/*"></label>
-  <button id="addText">Metin Ekle</button>
-  <input type="color" id="textColor" value="#000000">
-  <input type="range" id="opacity" min="0" max="1" step="0.05" value="1" title="Saydamlık">
-  <button id="save">💾 Kaydet</button>
-</div>
+  <div id="canvas-container">
+    <canvas id="editorCanvas" width="800" height="600"></canvas>
+  </div>
 
-<div id="loading"></div>
-<canvas id="canvas" width="800" height="600"></canvas>
+  <div class="layer-controls">
+    <label>Saydamlık: <input type="range" id="opacitySlider" min="0" max="1" step="0.01" value="1"></label>
+    <button onclick="bringForward()">Öne Al</button>
+    <button onclick="sendBackward()">Geri Al</button>
+    <button onclick="deleteSelected()">Sil</button>
+  </div>
 
-<script>
-const canvas = new fabric.Canvas('canvas', { backgroundColor: '#fff' });
-const loading = document.getElementById('loading');
+  <script>
+    const canvas = document.getElementById('editorCanvas');
+    const ctx = canvas.getContext('2d');
+    const imageLoader = document.getElementById('imageLoader');
+    const opacitySlider = document.getElementById('opacitySlider');
+    let elements = [];
+    let selectedIndex = null;
+    let dragging = false;
+    let offsetX, offsetY;
 
-function addImageSequential(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  loading.textContent = "📸 Görsel yükleniyor...";
-  reader.onload = (ev) => {
-    const data = ev.target.result;
-    fabric.util.loadImage(data, function(imgEl) {
-      const img = new fabric.Image(imgEl, { objectCaching: false });
-      const scale = Math.min(canvas.width / img.width, canvas.height / img.height) * 0.9;
-      img.scale(scale);
-      img.set({
-        left: (canvas.width - img.width * scale) / 2,
-        top: (canvas.height - img.height * scale) / 2
+    imageLoader.addEventListener('change', function(e) {
+      [...e.target.files].forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const img = new Image();
+          img.onload = function() {
+            elements.push({ type: 'image', img, x: 50, y: 50, width: img.width / 2, height: img.height / 2, opacity: 1 });
+            drawCanvas();
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
       });
-      canvas.add(img);
-      canvas.setActiveObject(img);
-      canvas.renderAll();
-      loading.textContent = "";
-      console.log("✅ Görsel eklendi:", img.width, img.height);
-    }, { crossOrigin: 'anonymous' });
-  };
-  reader.readAsDataURL(file);
-}
+    });
 
-document.getElementById('file1').onchange = function() { addImageSequential(this); };
-document.getElementById('file2').onchange = function() { addImageSequential(this); };
+    function addText() {
+      const text = document.getElementById('textInput').value;
+      const color = document.getElementById('textColor').value;
+      const fontSize = parseInt(document.getElementById('fontSize').value);
+      if (text) {
+        elements.push({ type: 'text', text, x: 100, y: 100, fontSize, color });
+        drawCanvas();
+      }
+    }
 
-// Metin ekleme
-document.getElementById('addText').onclick = () => {
-  const t = new fabric.IText('Metin', {
-    left: 300, top: 250, fill: document.getElementById('textColor').value, fontSize: 40
-  });
-  canvas.add(t);
-  canvas.setActiveObject(t);
-};
+    function drawCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      elements.forEach((el, i) => {
+        if (el.type === 'image') {
+          ctx.globalAlpha = el.opacity;
+          ctx.drawImage(el.img, el.x, el.y, el.width, el.height);
+          ctx.globalAlpha = 1;
+        } else if (el.type === 'text') {
+          ctx.font = `${el.fontSize}px Arial`;
+          ctx.fillStyle = el.color;
+          ctx.fillText(el.text, el.x, el.y);
+        }
+        if (i === selectedIndex) {
+          ctx.strokeStyle = 'red';
+          ctx.strokeRect(el.x, el.y, el.width || 100, el.height || el.fontSize);
+        }
+      });
+    }
 
-// Renk değişimi
-document.getElementById('textColor').onchange = (e) => {
-  const obj = canvas.getActiveObject();
-  if (obj && obj.type === 'i-text') {
-    obj.set('fill', e.target.value);
-    canvas.renderAll();
-  }
-};
+    canvas.addEventListener('mousedown', function(e) {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      selectedIndex = elements.findIndex(el => x >= el.x && x <= el.x + (el.width || 100) && y >= el.y && y <= el.y + (el.height || el.fontSize));
+      if (selectedIndex !== -1) {
+        dragging = true;
+        offsetX = x - elements[selectedIndex].x;
+        offsetY = y - elements[selectedIndex].y;
+        opacitySlider.value = elements[selectedIndex].opacity || 1;
+        drawCanvas();
+      }
+    });
 
-// Saydamlık
-document.getElementById('opacity').oninput = (e) => {
-  const obj = canvas.getActiveObject();
-  if (obj) {
-    obj.set('opacity', parseFloat(e.target.value));
-    canvas.renderAll();
-  }
-};
+    canvas.addEventListener('mousemove', function(e) {
+      if (dragging && selectedIndex !== null) {
+        const rect = canvas.getBoundingClientRect();
+        elements[selectedIndex].x = e.clientX - rect.left - offsetX;
+        elements[selectedIndex].y = e.clientY - rect.top - offsetY;
+        drawCanvas();
+      }
+    });
 
-// Kaydetme
-document.getElementById('save').onclick = () => {
-  const link = document.createElement('a');
-  link.download = 'duzenlenmis.png';
-  link.href = canvas.toDataURL({ format: 'png' });
-  link.click();
-};
-</script>
+    canvas.addEventListener('mouseup', function() {
+      dragging = false;
+    });
 
+    opacitySlider.addEventListener('input', function() {
+      if (selectedIndex !== null && elements[selectedIndex].type === 'image') {
+        elements[selectedIndex].opacity = parseFloat(opacitySlider.value);
+        drawCanvas();
+      }
+    });
+
+    function bringForward() {
+      if (selectedIndex !== null && selectedIndex < elements.length - 1) {
+        [elements[selectedIndex], elements[selectedIndex + 1]] = [elements[selectedIndex + 1], elements[selectedIndex]];
+        selectedIndex++;
+        drawCanvas();
+      }
+    }
+
+    function sendBackward() {
+      if (selectedIndex !== null && selectedIndex > 0) {
+        [elements[selectedIndex], elements[selectedIndex - 1]] = [elements[selectedIndex - 1], elements[selectedIndex]];
+        selectedIndex--;
+        drawCanvas();
+      }
+    }
+
+    function deleteSelected() {
+      if (selectedIndex !== null) {
+        elements.splice(selectedIndex, 1);
+        selectedIndex = null;
+        drawCanvas();
+      }
+    }
+  </script>
 </body>
 </html>
